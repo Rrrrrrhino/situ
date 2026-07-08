@@ -1,0 +1,48 @@
+=== 2d5f87fc7390.epub | 书名: The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma | 章节数: 22 ===
+  [0] 'PROLOGUE'  (8333 chars)
+  [1] 'CHAPTER 1'  (38425 chars)
+  [2] 'CHAPTER 2'  (43448 chars)
+  [3] 'CHAPTER 3'  (20595 chars)
+  [4] 'CHAPTER 4'  (49126 chars)
+  ... 共 22 章
+=== 37c1074d86a1.epub | 书名: The Artist's Way | 章节数: 27 ===
+  [0] '第 2 章'  (711 chars)
+  [1] '第 3 章'  (1026 chars)
+  [2] 'Copyright Page'  (1018 chars)
+  [3] '第 6 章'  (3562 chars)
+  [4] 'Introduction'  (14635 chars)
+  ... 共 27 章
+=== 807dff52fc19.epub | 书名: Bossypants | 章节数: 29 ===
+  [0] 'Introduction'  (4094 chars)
+  [1] 'Origin Story'  (4425 chars)
+  [2] 'Growing Up and Liking It'  (8398 chars)
+  [3] 'All Girls Must Be Everything'  (9283 chars)
+  [4] 'Delaware County Summer Showtime!'  (26285 chars)
+  ... 共 29 章
+=== ba2e1a0557be.epub | 书名: The Artist's Way | 章节数: 27 ===
+  [0] '第 2 章'  (711 chars)
+  [1] '第 3 章'  (1026 chars)
+  [2] 'Copyright Page'  (1018 chars)
+  [3] '第 6 章'  (3562 chars)
+  [4] 'Introduction'  (14635 chars)
+  ... 共 27 章
+=== cb089c878a12.epub | 书名: To Kill a Mockingbird | 章节数: 5 ===
+  [0] 'Chapter 8'  (140329 chars)
+  [1] 'Chapter 14'  (145815 chars)
+  [2] 'Chapter 21'  (137438 chars)
+  [3] 'About the Publisher'  (154822 chars)
+  [4] 'Document Outline'  (453 chars)
+=== d87333f486e0.epub | 书名: The Artist's Way | 章节数: 27 ===
+  [0] '第 2 章'  (711 chars)
+  [1] '第 3 章'  (1026 chars)
+  [2] 'Copyright Page'  (1018 chars)
+  [3] '第 6 章'  (3562 chars)
+  [4] 'Introduction'  (14635 chars)
+  ... 共 27 章
+=== ea6397bef0fe.epub | 书名: The Artist's Way | 章节数: 27 ===
+  [0] '第 2 章'  (711 chars)
+  [1] '第 3 章'  (1026 chars)
+  [2] 'Copyright Page'  (1018 chars)
+  [3] '第 6 章'  (3562 chars)
+  [4] 'Introduction'  (14635 chars)
+  ... 共 27 章

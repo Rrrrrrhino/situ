@@ -1,0 +1,1 @@
+{"version":"0.0.1","configurations":[{"name":"situ-prev","runtimeExecutable":"bash","runtimeArgs":["-c","cd previews && python3 -m http.server ${PORT:-8823}"],"autoPort":true}]}

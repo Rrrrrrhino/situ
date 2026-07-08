@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>四土 · 词汇分层测试页</title>
+  <!-- 复用真实 style.css（.vocab/.w/.sent 的真实观感） -->
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { background: var(--bg); color: var(--ink); font-family: var(--read-font); padding: 0; margin: 0; }
+    .devtest-header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      font-family: var(--ui-font);
+    }
+    .devtest-header h1 { margin: 0 0 4px; font-size: 18px; color: var(--gold-deep); }
+    .stats {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      font-size: 13px; color: var(--ink-soft);
+      margin-top: 8px;
+    }
+    .stat { background: var(--gold-soft); border-radius: 6px; padding: 4px 12px; }
+    .stat strong { color: var(--ink); }
+    .devtest-body { max-width: 740px; margin: 0 auto; padding: 32px 24px 80px; }
+    article { font-size: var(--article-fs); line-height: 1.85; font-family: var(--read-font); }
+    article h2 { font-size: 22px; font-weight: 600; margin: 1.8em 0 0.6em; color: var(--ink); }
+    article h3 { font-size: 18px; font-weight: 600; margin: 1.5em 0 0.5em; color: var(--ink-soft); }
+    article p { margin: 0 0 1.2em; text-align: justify; }
+    /* mark 的 UA 默认样式会加黄底，覆盖掉 */
+    mark { background: none; }
+    .error-box {
+      background: #fff3f0; border: 1px solid #f5c6bb; border-radius: 8px;
+      padding: 16px; color: #7a3020; font-family: var(--ui-font); font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .loading { color: var(--muted); font-family: var(--ui-font); font-size: 14px; padding: 32px 24px; }
+  </style>
+</head>
+<body>
+
+<div class="devtest-header">
+  <h1>四土 · 词汇分层测试页（阶段 1B）</h1>
+  <div id="stats" class="stats">
+    <span class="stat">正在加载…</span>
+  </div>
+</div>
+
+<div class="devtest-body">
+  <div id="output" class="loading">正在初始化 NLP 模型与词表，首次加载约 1–3 秒……</div>
+</div>
+
+<script>
+/* ── 样例文章（含不规则词形、多段落、标题层级） ────────────────────────── */
+const SAMPLE_BLOCKS = [
+  {
+    type: "h2",
+    text: "The Cognitive Dimensions of Language Acquisition",
+  },
+  {
+    type: "p",
+    text: "The children were running faster than the mice. London's museums fascinated Dr. Smith, who studied better techniques. She didn't realize the implications of these analyses—they'd grown complicated.",
+  },
+  {
+    type: "h3",
+    text: "Pragmatics and Implicature",
+  },
+  {
+    type: "p",
+    text: "The phenomenon of cognitive dissonance manifests in peculiar ways when learners encounter unfamiliar lexical items. Photosynthesis allows plants to convert sunlight into glucose through a sophisticated biochemical process that relies on chlorophyll. Unprecedented economic volatility has exacerbated inequalities across demographic groups.",
+  },
+  {
+    type: "p",
+    text: "Ferdinand de Saussure's foundational insight that the linguistic sign is arbitrary—that the relationship between the signifier and the signified is conventional rather than natural—opened the door to structuralist analysis. His differentiation between langue and parole provided the conceptual vocabulary for decades of subsequent inquiry.",
+  },
+  {
+    type: "p",
+    text: "Grice's cooperative principle and its associated maxims of quantity, quality, relation, and manner provided a rigorous framework for understanding how speakers systematically communicate more than they literally say. The phenomenon of conversational implicature relies on the assumption of rationality that underlies ordinary human communication.",
+  },
+];
+
+/* ── 主流程 ───────────────────────────────────────────────────────────────── */
+async function main() {
+  const outputEl = document.getElementById("output");
+  const statsEl = document.getElementById("stats");
+
+  try {
+    // 1. 加载 core.bundle.js（IIFE，挂到 window.SituCore）
+    await loadScript("../js/core.bundle.js");
+
+    if (!window.SituCore) throw new Error("core.bundle.js 未挂 SituCore 到 window");
+
+    // esbuild --global-name 把所有 export 平铺到 SituCore 顶层
+    const { VocabClassifier, renderArticleFragment, setDataBase } = window.SituCore;
+
+    // 告诉 classifier 词表的 base URL（相对于当前 HTML 所在目录向上一级）
+    // _devtest/ → 上一级 mobile/，词表在 mobile/data/
+    const mobileBase = location.href.replace(/\/[^/]*$/, '/').replace('/_devtest/', '/');
+    setDataBase(mobileBase);
+
+    // 2. 初始化分类器（cet4-6 级别）
+    outputEl.textContent = "正在加载词表…";
+    const t0 = performance.now();
+    const clf = new VocabClassifier("cet4-6");
+    await clf.init();
+
+    // 3. 分析文章
+    outputEl.textContent = "正在分析词汇…";
+    const report = await clf.analyze(SAMPLE_BLOCKS);
+    const t1 = performance.now();
+    const elapsed = Math.round(t1 - t0);
+
+    // 4. 渲染
+    const html = renderArticleFragment(report);
+
+    // 5. 统计
+    const vocabCount = report.hits.size;
+    const sortedHits = clf.sorted_hits(report);
+    const vocabSample = sortedHits.slice(0, 8).map(h =>
+      `${h.lemma}(${h.level},rank=${h.daily_rank ?? "—"})`
+    ).join("  ");
+
+    // 6. 更新界面
+    outputEl.innerHTML = html;
+    statsEl.innerHTML = `
+      <span class="stat">总词数 <strong>${report.total_tokens}</strong></span>
+      <span class="stat">生词数 <strong>${vocabCount}</strong></span>
+      <span class="stat">耗时 <strong>${elapsed} ms</strong></span>
+      <span class="stat" style="font-size:11px;color:var(--muted)">生词样本（按频率）: ${vocabSample}</span>
+    `;
+
+    // 7. 点词交互（验证 data-* 属性可读）
+    document.querySelectorAll(".vocab, .w").forEach(el => {
+      el.addEventListener("click", () => {
+        const lemma   = el.dataset.lemma || el.textContent.toLowerCase();
+        const level   = el.dataset.level || "(span.w)";
+        const freq    = el.dataset.freq  || "";
+        const sentEl  = el.closest(".sent");
+        const sentence = sentEl ? sentEl.dataset.sentence : "";
+        alert(`lemma: ${lemma}\nlevel: ${level}\nfreq: ${freq}\n句子: ${sentence.slice(0, 80)}…`);
+      });
+    });
+
+  } catch (err) {
+    outputEl.innerHTML = `<div class="error-box">加载失败：\n${err.message}\n\n${err.stack || ""}</div>`;
+    statsEl.innerHTML = `<span class="stat" style="color:var(--danger)">错误</span>`;
+    console.error(err);
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error(`无法加载 ${src}`));
+    document.head.appendChild(s);
+  });
+}
+
+main();
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>收获·跳回原文的定位提示 — 真实高亮词块版</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;1,400&display=swap');
+:root{
+  --bg:#f7f2e8; --paper:#fffdf7; --fg:#34302a; --muted:#a89c86; --border:#e9e0cd;
+  --accent:#9c7a3e; --navy-deep:#1e3a5f;
+  --read:'Bitter',Georgia,serif; --han:'PingFang SC','Microsoft YaHei',sans-serif;
+  /* 真机实值 */
+  --captSet:rgba(190,150,80,.28);        /* 词块本身的琥珀高亮（.capt）*/
+  --cur:rgba(69,72,126,.13);             /* 现状用的 --cur（indigo 主题）——真机就这么淡 */
+  --olive:#5f7a58;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--han);
+  padding:34px 20px 70px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+h1{font:600 20px/1.4 var(--han);letter-spacing:.02em;margin:0 0 4px;color:var(--navy-deep)}
+.sub{font-size:13px;color:var(--muted);margin:0 0 24px;line-height:1.8}
+.sub b{color:var(--accent);font-weight:600}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:14px;
+  padding:18px 22px 22px;margin-bottom:20px;position:relative}
+.tag{display:inline-flex;align-items:center;gap:7px;font:600 12.5px var(--han);
+  color:var(--navy-deep);letter-spacing:.03em;margin-bottom:3px}
+.tag .k{font:600 11px var(--read);color:#fff;background:var(--navy-deep);
+  min-width:19px;height:19px;padding:0 5px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center}
+.note{font-size:11.5px;color:var(--muted);margin:0 0 14px;line-height:1.7}
+.reading{font:400 16px/1.95 var(--read);color:#322d25;letter-spacing:.02em;word-spacing:.06em}
+/* 词块本身的琥珀高亮，圆角照真机 .capt */
+.capt{border-radius:5px 8px 4px 7px/7px 4px 8px 5px;padding:.02em .05em;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;background-color:var(--captSet)}
+
+/* ===== 现状·蓝（把 --cur 真值做可见）：琥珀 → 叠一层淡靛蓝 → 退回琥珀 ===== */
+.cur .cue{animation:curPulse 3.2s ease-in-out infinite}
+@keyframes curPulse{
+  0%,100%{background-color:var(--captSet);box-shadow:none}
+  14%{background-color:rgba(69,72,126,.30);box-shadow:0 0 0 2px rgba(69,72,126,.28)}
+  70%{background-color:rgba(69,72,126,.16)}
+}
+
+/* ===== D·绿 洗色（无左笔痕）：琥珀 → 橄榄绿 → 退回琥珀 ===== */
+.dfill .cue{animation:dPulse 3.2s ease-in-out infinite}
+@keyframes dPulse{
+  0%,100%{background-color:var(--captSet);box-shadow:none}
+  14%{background-color:rgba(95,122,88,.42);box-shadow:0 0 0 2px rgba(95,122,88,.4)}
+  70%{background-color:rgba(95,122,88,.22)}
+}
+
+/* ===== D·绿 描环（保留琥珀不变，只让一圈绿环呼吸）：最不打架 ===== */
+.dring .cue{animation:dRing 3.2s ease-in-out infinite}
+@keyframes dRing{
+  0%,100%{box-shadow:0 0 0 0 rgba(95,122,88,0)}
+  16%{box-shadow:0 0 0 2.5px rgba(95,122,88,.85)}
+  75%{box-shadow:0 0 0 2px rgba(95,122,88,.35)}
+}
+
+.foot{font-size:12.5px;color:var(--muted);line-height:1.9;margin-top:6px;
+  padding:14px 16px;background:var(--paper);border:1px dashed var(--border);border-radius:12px}
+.foot b{color:var(--navy-deep)}
+.mini{font-size:11px;color:var(--muted);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>跳回原文时，「那几个词」怎么亮给你看</h1>
+  <p class="sub">这次照你说的——词块本身（2–3 个词、<b>已经是琥珀高亮</b>）来做，看叠加后和不和谐。
+  三个候选都在真实琥珀词块上循环演示「一亮→退回」那一下（真机里只闪一次约 1s 后收回琥珀）。
+  <b>先看现状那条：真机里它其实几乎看不见（.8s 淡入却 60ms 就清掉的 bug，我已定位）；这里我把它做成"本该有的可见样子"。</b></p>
+
+  <!-- 现状·蓝 -->
+  <div class="card cur">
+    <div class="tag"><span class="k">蓝</span>现状·淡靛蓝（修好可见后）</div>
+    <div class="note">词块从琥珀叠一层靛蓝、再退回琥珀。冷暖对撞，颜色区分明显但略"跳"。</div>
+    <div class="reading">…early thirteen, my brother <span class="capt cue">Jem got his arm badly broken</span> at the elbow. When it healed, and Jem's <span class="capt">fears of</span> never being able to play football were assuaged…</div>
+  </div>
+
+  <!-- D·绿 洗色 -->
+  <div class="card dfill">
+    <div class="tag"><span class="k">D</span>绿·洗色（无左笔痕）</div>
+    <div class="note">词块从琥珀扫成橄榄绿、再退回。你选的 D。绿盖在琥珀上对比强，但两次都是"填色"，色相在打架。</div>
+    <div class="reading">…early thirteen, my brother <span class="capt cue">Jem got his arm badly broken</span> at the elbow. When it healed, and Jem's <span class="capt">fears of</span> never being able to play football were assuaged…</div>
+  </div>
+
+  <!-- D·绿 描环 -->
+  <div class="card dring">
+    <div class="tag"><span class="k">D′</span>绿·描环（保留琥珀）</div>
+    <div class="note">琥珀底<b>不动</b>，只在词块外呼吸一圈橄榄绿细环。绿只做"指针"不做"填色"，跟琥珀最不打架、又足够醒目。我的推荐。</div>
+    <div class="reading">…early thirteen, my brother <span class="capt cue">Jem got his arm badly broken</span> at the elbow. When it healed, and Jem's <span class="capt">fears of</span> never being able to play football were assuaged…</div>
+  </div>
+
+  <div class="foot">
+    我的判断：词块自带琥珀，再叠一整块<b>异色填充</b>（蓝或绿）都会色相打架、有点脏；<b>D′ 绿描环</b>保留琥珀本色、
+    只用一圈绿环当"看这里"的指针，最干净也最醒目。<b>你要哪个？</b>选定我直接落真机（同时修好"看不见"的 bug、并改成词块级定位）。
+    <div class="mini">注：真机里词块可能跨行/换页，环与填色都按 box-decoration-break 逐行包，不会断。</div>
+  </div>
+</div>
+</body>
+</html>

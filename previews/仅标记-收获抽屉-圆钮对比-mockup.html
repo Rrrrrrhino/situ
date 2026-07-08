@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>抽屉圆钮 · 低调把手对比</title>
+<style>
+:root{
+  --bg:#f7f2e8; --paper:#fffdf7; --fg:#34302a; --muted:#a89c86; --border:#e9e0cd;
+  --accent:#9c7a3e; --accent-soft:rgba(156,122,62,.13);
+  --marker:rgba(190,150,80,.30); --captDeep:rgba(180,138,62,.46);
+  --ink:#4a6b85;
+  --han:'LXGW WenKai','PingFang SC',system-ui,sans-serif;
+  --read-font:'Bitter',Georgia,"PingFang SC",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--han);-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:34px 28px 80px}
+.h-kick{font:600 12px/1 var(--han);letter-spacing:.28em;color:var(--accent);text-transform:uppercase}
+.h-title{font:600 26px/1.3 var(--han);margin:9px 0 4px}
+.h-sub{font:14px/1.85 var(--han);color:var(--muted);max-width:760px}
+.rule{height:1px;background:var(--border);margin:24px 0 30px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+.card-label{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
+.card-label .n{font:600 13px/1 var(--han);color:var(--ink);border:1px solid var(--ink);border-radius:5px;padding:4px 7px}
+.card-label .t{font:600 16px/1 var(--han)}
+.card-note{font:13px/1.8 var(--han);color:var(--muted);margin:11px 2px 0}
+.card-note b{color:var(--fg);font-weight:600}
+
+.frame{position:relative;height:330px;border:1px solid var(--border);border-radius:12px;
+  background:var(--paper);overflow:hidden}
+.mini-read{position:absolute;inset:0;padding:26px 34px 20px;overflow:hidden}
+.mini-read h4{font:600 17px/1.3 var(--read-font);margin:0 0 13px}
+.mini-read p{font:15px/1.95 var(--read-font);margin:0 0 12px;color:#4a453d}
+.mk{background:var(--marker);border-radius:5px 8px 4px 7px/7px 4px 8px 5px;padding:.02em .12em}
+.mk.deep{background:var(--captDeep)}
+
+/* 甲 · 半隐圆钮（只露半个圆，几乎无存在感；hover 才整颗探出） */
+.nub{position:absolute;top:50%;right:0;transform:translate(50%,-50%);
+  width:34px;height:34px;border-radius:50%;background:var(--paper);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:-2px 0 8px rgba(120,90,40,.06);color:var(--ink)}
+.nub svg{width:15px;height:15px;margin-right:8px;opacity:.7}
+.nub .dot{position:absolute;top:5px;left:6px;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+
+/* 乙 · 悬浮小圆钮（整颗浮在边内侧，可爱书签图标 + 柔影） */
+.fab{position:absolute;top:50%;right:14px;transform:translateY(-50%);
+  width:40px;height:40px;border-radius:50%;background:var(--paper);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 3px 12px rgba(120,90,40,.12);color:var(--ink)}
+.fab svg{width:19px;height:19px}
+.fab .dot{position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;
+  background:var(--ink);border:2px solid var(--paper)}
+
+/* 丙 · 极简竖握把（无圆，一道短圆条，最低调） */
+.grip{position:absolute;top:50%;right:5px;transform:translateY(-50%);
+  width:5px;height:46px;border-radius:4px;background:var(--border);cursor:pointer}
+.grip::after{content:"";position:absolute;right:1px;top:50%;transform:translateY(-50%);
+  width:3px;height:22px;border-radius:3px;background:var(--ink);opacity:.45}
+
+/* ---- 展开态：抽屉含三 tab ---- */
+.open-wrap{margin-top:46px}
+.open-frame{position:relative;height:440px;border:1px solid var(--border);border-radius:12px;
+  background:var(--paper);overflow:hidden;display:flex}
+.open-read{flex:1;padding:28px 34px;overflow:hidden;position:relative}
+.open-read h4{font:600 18px/1.3 var(--read-font);margin:0 0 14px}
+.open-read p{font:15px/1.95 var(--read-font);margin:0 0 12px;color:#4a453d}
+.open-nub{position:absolute;top:50%;right:-1px;transform:translateY(-50%);
+  width:28px;height:52px;border-radius:9px 0 0 9px;background:var(--paper);
+  border:1px solid var(--border);border-right:none;display:flex;align-items:center;
+  justify-content:center;color:var(--muted)}
+.drawer{width:360px;flex:none;border-left:1px solid var(--border);background:var(--paper);
+  box-shadow:-14px 0 26px rgba(120,90,40,.06);display:flex;flex-direction:column}
+.dtabs{display:flex;border-bottom:1px solid var(--border)}
+.dtabs button{flex:1;padding:13px 8px;border:none;background:none;font:13px/1 var(--han);
+  color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
+.dtabs button.active{color:var(--fg);border-bottom-color:var(--accent);font-weight:600}
+.dtabs .c{font:600 11px/1 var(--han);color:#fff;background:var(--ink);border-radius:14px;padding:2px 6px;margin-left:3px}
+.dbody{flex:1;overflow:auto;padding:16px 18px}
+.sh-item{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:#fffefb}
+.sh-item .en{font:600 15px/1.4 var(--read-font);color:#8a6a2e}
+.sh-item .en .tier{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.sh-item .def{font:13px/1.75 var(--han);color:#5c554a;margin-top:5px}
+.legend{font:13px/1.85 var(--han);color:var(--muted);margin-top:10px}
+.legend b{color:var(--fg);font-weight:600}
+</style></head>
+<body>
+<div class="page">
+  <div class="h-kick">Reading Drawer · Discreet Toggle</div>
+  <div class="h-title">整条右栏 → 一只可开关的抽屉，边上只留一颗低调钮</div>
+  <div class="h-sub">讲解 / 生词本 / 收获本就共用右侧那一块，整块做成抽屉：讲解态、仅标记态都能自由开关。收起时右缘几乎没有存在感，只剩一颗小钮；仅标记下默认收起，专心读与划。下面三种「钮」样式挑一个（收起→点它滑出、滑出 .22s 无弹跳，三种一样）。</div>
+  <div class="rule"></div>
+
+  <div class="grid">
+    <div>
+      <div class="card-label"><span class="n">甲</span><span class="t">半隐圆钮</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly to be read again.</p>
+        </div>
+        <div class="nub"><span class="dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </div>
+      </div>
+      <div class="card-note">只露<b>半颗圆</b>贴在右缘，几乎看不见；hover 才整颗探出。攒了新收获时左上角点一颗<b>墨点</b>提示（不写数字，不打扰）。存在感最低。</div>
+    </div>
+
+    <div>
+      <div class="card-label"><span class="n">乙</span><span class="t">悬浮小圆钮</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly to be read again.</p>
+        </div>
+        <div class="fab"><span class="dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v16l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
+        </div>
+      </div>
+      <div class="card-note">一颗<b>完整小圆钮</b>浮在边内侧，柔影 + 可爱<b>书签图标</b>，攒了新收获右上角亮一颗墨点。比甲显眼一点点，但更"漂亮可爱"、好点。</div>
+    </div>
+
+    <div>
+      <div class="card-label"><span class="n">丙</span><span class="t">极简竖握把</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly to be read again.</p>
+        </div>
+        <div class="grip"></div>
+      </div>
+      <div class="card-note">连圆都没有，只一道<b>短圆握把</b>（像 iOS 抓手）贴右缘，最克制、最"隐形"。但不写字不带图标，第一次可能不易被发现是可点的。</div>
+    </div>
+  </div>
+
+  <div class="open-wrap">
+    <div class="card-label"><span class="n">展开</span><span class="t">点钮后 · 抽屉滑出（含讲解／生词本／收获三 tab，三种钮共用）</span></div>
+    <div class="open-frame">
+      <div class="open-read">
+        <h4>The Quiet Craft of Reading</h4>
+        <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention that reading, at its best, requires.</p>
+        <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way — a phrase, a turn, a word worth keeping.</p>
+        <p>Later, when the chapter was done, he would return to them one by one.</p>
+        <div class="open-nub"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+      </div>
+      <div class="drawer">
+        <div class="dtabs">
+          <button>讲解</button>
+          <button>生词本 <span class="c">3</span></button>
+          <button class="active">收获 <span class="c">7</span></button>
+        </div>
+        <div class="dbody">
+          <div class="sh-item"><div class="en"><span class="tier" style="background:#5f7a58"></span>settle before moving on</div><div class="def">在继续之前先沉淀、消化——不急着往下读。</div></div>
+          <div class="sh-item"><div class="en"><span class="tier" style="background:#b0894a"></span>deliberate pleasure</div><div class="def">刻意为之、从容不迫的愉悦。</div></div>
+          <div class="sh-item"><div class="en"><span class="tier" style="background:#4a6b85"></span>gathered along the way</div><div class="def">一路走一路攒下来的。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="legend"><b>开关逻辑：</b>讲解态点蓝词 / 仅标记态点钮 → 抽屉滑出；再点钮（或抽屉边缘的 › ）收起。仅标记默认收起、讲解默认展开，但两态都能手动开关，记住你上次的选择。</div>
+  </div>
+</div>
+</body></html>

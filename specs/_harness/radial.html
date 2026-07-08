@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>四土 · 环形浮标菜单 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f2e8; --paper:#fffdf7; --fg:#34302a; --muted:#a89c86; --border:#e9e0cd;
+  --accent:#9c7a3e; --accent-soft:rgba(156,122,62,.13);
+  --vc:#45487e; --cur:rgba(69,72,126,.13); --article:#322d25;
+  --read-font:'Bitter',Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
+  font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+
+/* faux reading surface so the menu is judged in context */
+.page{max-width:720px;margin:0 auto;padding:64px 40px 160px}
+.page h1{font:600 30px/1.3 var(--read-font);letter-spacing:.005em;color:var(--fg);margin:0 0 6px}
+.page .meta{color:var(--muted);font-size:12.5px;margin-bottom:36px}
+.page article{font:18px/1.85 var(--read-font);letter-spacing:.018em;color:var(--article)}
+.page article p{margin:0 0 1em}
+mark.vocab{background:none;color:var(--vc);font-weight:600;border-bottom:2px solid var(--cur);padding-bottom:1px}
+
+/* tiny progress line at the very bottom (the “quiet” persistent affordance) */
+.progress{position:fixed;left:0;right:0;bottom:0;height:3px;background:rgba(156,122,62,.12);z-index:40}
+.progress > i{display:block;height:100%;width:38%;background:var(--accent);opacity:.55}
+
+/* ── radial floating menu ─────────────────────────────────────────────────── */
+.rfm{position:fixed;left:34px;bottom:30px;z-index:60;width:56px;height:56px}
+/* scrim that dims the page only while the ring is open */
+.rfm-scrim{position:fixed;inset:0;z-index:55;background:rgba(40,30,14,0);
+  -webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);
+  opacity:0;pointer-events:none;transition:opacity .35s ease, background .35s ease}
+.rfm.open ~ .rfm-scrim{opacity:1;pointer-events:auto;background:rgba(40,30,14,.14);
+  -webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px)}
+
+/* the trigger — quiet by default, blooms on open */
+.fab{position:absolute;inset:0;border:none;cursor:pointer;border-radius:50%;
+  background:var(--paper);color:var(--accent);
+  box-shadow:0 4px 16px rgba(70,50,20,.18),0 0 0 1px var(--border);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
+  opacity:.92}
+.fab:hover{opacity:1;box-shadow:0 6px 20px rgba(70,50,20,.24),0 0 0 1px var(--accent)}
+.fab .glyph{position:relative;width:20px;height:20px}
+/* default glyph: concentric “aperture / focus” mark */
+.fab .glyph::before,.fab .glyph::after{content:'';position:absolute;border-radius:50%;
+  border:2px solid currentColor;transition:.4s cubic-bezier(.34,1.56,.64,1)}
+.fab .glyph::before{inset:0}
+.fab .glyph::after{inset:6px;border-width:2px}
+.rfm.open .fab{transform:rotate(135deg);background:var(--accent);color:#fff;
+  box-shadow:0 8px 26px rgba(70,50,20,.30)}
+/* morph the concentric mark into a + (which rotates to ×) when open */
+.rfm.open .fab .glyph::before{inset:9px 0;border-width:0;border-top:2.4px solid #fff;border-radius:0}
+.rfm.open .fab .glyph::after{inset:0 9px;border-width:0;border-left:2.4px solid #fff;border-radius:0}
+
+/* the petals — positioned on an arc; --x/--y set per item in JS */
+.petal{position:absolute;left:6px;top:6px;width:46px;height:46px;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:var(--paper);color:var(--accent);border:1px solid var(--border);
+  box-shadow:0 4px 14px rgba(70,50,20,.16);cursor:pointer;
+  font:600 18px/1 -apple-system,"PingFang SC",sans-serif;
+  transform:translate(0,0) scale(.3);opacity:0;pointer-events:none;
+  transition:transform .42s cubic-bezier(.34,1.56,.64,1), opacity .3s ease, color .15s, background .15s}
+.petal:hover{color:#fff;background:var(--accent);border-color:var(--accent);
+  transform:translate(var(--x),var(--y)) scale(1.1)}
+.rfm.open .petal{opacity:1;pointer-events:auto;transform:translate(var(--x),var(--y)) scale(1)}
+/* fan stagger: nearer-the-thumb petals open first */
+.rfm.open .petal:nth-child(2){transition-delay:.02s}
+.rfm.open .petal:nth-child(3){transition-delay:.06s}
+.rfm.open .petal:nth-child(4){transition-delay:.10s}
+.rfm.open .petal:nth-child(5){transition-delay:.14s}
+.rfm.open .petal:nth-child(6){transition-delay:.18s}
+.rfm.open .petal:nth-child(7){transition-delay:.22s}
+/* label sits centered just below each petal — quiet, always legible */
+.petal .lbl{position:absolute;top:50px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  font:500 11.5px/1 -apple-system,"PingFang SC",sans-serif;color:var(--muted);
+  letter-spacing:.02em;opacity:0;transition:opacity .25s ease .12s;pointer-events:none}
+.rfm.open .petal .lbl{opacity:1}
+.petal:hover .lbl{color:var(--accent)}
+
+.tip{position:fixed;right:34px;bottom:30px;z-index:60;font-size:12px;color:var(--muted);
+  background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:7px 11px;box-shadow:0 2px 8px rgba(70,50,20,.08)}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>The Quiet Craft of Reading Well</h1>
+  <div class="meta">The Conversation · 6 min read</div>
+  <article>
+    <p>To read with attention is a quiet, <mark class="vocab">deliberate</mark> craft. A good page does not shout; it invites the eye to move along the line and rest at the turn, the way a walker pauses at the crest of a hill to take in the valley below.</p>
+    <p>The typeface matters more than we admit. A face built for the screen keeps its <mark class="vocab">composure</mark> at small sizes, holding each letter distinct so the mind never stumbles — and an hour of reading leaves you refreshed rather than <mark class="vocab">fatigued</mark>.</p>
+    <p>When the tools recede, the words remain. The shelf, the chapters, the size of the type — all of it should wait just out of sight until the moment a hand reaches for it, and then arrive without ceremony.</p>
+  </article>
+</div>
+
+<div class="progress"><i></i></div>
+
+<div class="rfm" id="rfm">
+  <!-- petals first (DOM order = open order), trigger last so it sits on top -->
+  <button class="petal" data-act="shelf"><span>⌂</span><span class="lbl">书架</span></button>
+  <button class="petal" data-act="toc"><span>☰</span><span class="lbl">目录</span></button>
+  <button class="petal" data-act="size"><span style="font-weight:700">A</span><span class="lbl">字号</span></button>
+  <button class="petal" data-act="theme"><span>◑</span><span class="lbl">配色</span></button>
+  <button class="petal" data-act="read"><span>♪</span><span class="lbl">朗读</span></button>
+  <button class="petal" data-act="add"><span>＋</span><span class="lbl">添加书</span></button>
+  <button class="fab" id="fab" title="菜单"><span class="glyph"></span></button>
+</div>
+<div class="rfm-scrim" id="scrim"></div>
+<div class="tip">点右下角浮标试试 · 再点收起</div>
+
+<script>
+const rfm=document.getElementById('rfm'), fab=document.getElementById('fab'), scrim=document.getElementById('scrim');
+const petals=[...rfm.querySelectorAll('.petal')];
+/* lay petals on a quarter-arc opening up-and-left from the trigger */
+const R=162, START=0, END=-94; // bottom-left: fan from right (0°) up to straight-up (-90°)
+const n=petals.length;
+petals.forEach((p,i)=>{
+  const t = n>1 ? i/(n-1) : 0;
+  const deg = START + (END-START)*t;
+  const rad = deg*Math.PI/180;
+  const x = Math.cos(rad)*R;        // +right
+  const y = Math.sin(rad)*R;        // +down (screen coords)
+  p.style.setProperty('--x', x.toFixed(1)+'px');
+  p.style.setProperty('--y', y.toFixed(1)+'px');
+});
+function toggle(){ rfm.classList.toggle('open'); }
+fab.addEventListener('click',e=>{e.stopPropagation();toggle();});
+scrim.addEventListener('click',()=>rfm.classList.remove('open'));
+document.querySelectorAll('.petal').forEach(p=>p.addEventListener('click',()=>{ /* demo only */ rfm.classList.remove('open'); }));
+</script>
+</body>
+</html>

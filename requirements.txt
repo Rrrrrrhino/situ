@@ -1,0 +1,18 @@
+# 三土 运行依赖（跨平台核心）
+# 安装： pip install -r requirements.txt
+#        python -m spacy download en_core_web_sm
+beautifulsoup4==4.14.3
+certifi==2026.5.20
+click==8.4.1
+EbookLib==0.20
+Jinja2==3.1.6
+lxml==6.1.1
+openai==2.38.0
+Pillow>=10.0
+python-dotenv==1.2.2
+pywebview==6.2.1
+requests==2.34.2
+spacy==3.8.14
+tqdm==4.67.3
+trafilatura==2.0.0
+urllib3==2.7.0

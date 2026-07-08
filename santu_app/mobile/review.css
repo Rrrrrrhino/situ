@@ -1,0 +1,380 @@
+/* 四土 · 口语复盘 —— 桌面独立窗印刷品化（批β，风格圣经为验收标准）
+   全部规则门控在 body.review-only（独立窗专属）或 html[data-night]（夜间令牌，
+   仅独立窗会置位）之下——手机版（REVIEW_ONLY=false）视觉零变化。
+   总纲：暖纸做底、深蓝做油墨不做涂料、细线版框替代卡片阴影、按钮似印章、
+   动效只做纸的物理、录音中=印章红点+等宽计时（无呼吸无发光）。 */
+
+/* ============ 版心：内容居中 680–720px，两侧是纸的留白 ============ */
+body.review-only .ov-body{
+  padding-inline:max(20px, calc(50% - 352px));
+  padding-top:8px;
+}
+body.review-only .ov-head{
+  padding-inline:max(12px, calc(50% - 360px));
+}
+
+/* 头部：纸面 + 细线，标题衬线化（像书页题眉） */
+body.review-only .ov-head .ttl{
+  font-family:'LXGW WenKai','Bitter',Georgia,serif;
+  font-size:16.5px;letter-spacing:.12em;font-weight:600;
+}
+body.review-only .icon-btn{border-radius:6px}
+
+/* ============ 细线版框（替代卡片阴影/大圆角） ============ */
+body.review-only .rec-card,
+body.review-only .retell-card,
+body.review-only .rev-transcript-card,
+body.review-only .dual-dialog-card,
+body.review-only .drill-targets,
+body.review-only .chk-item,
+body.review-only .chunk-drill-card,
+body.review-only .mst-item{
+  border-radius:6px;
+  box-shadow:none;
+  background:var(--paper);
+  border:1px solid var(--border);
+}
+
+/* ============ 输入屏 ============ */
+body.review-only .rev-input-wrap{padding:16px 0 8px}
+body.review-only .rev-label{
+  letter-spacing:.18em;font-size:11.5px;color:var(--muted);
+}
+body.review-only .rev-textarea{
+  border-width:1px;border-radius:6px;
+  box-shadow:none;
+}
+body.review-only .rev-textarea:focus{
+  border-color:var(--rev-ui);box-shadow:none;
+}
+
+/* 主按钮印章化：不再满宽深蓝条——像版框下钤的一方印 */
+body.review-only .rev-submit,
+body.review-only .drill-submit,
+body.review-only .rec-card .btn.rec-main{
+  display:block;width:auto;min-width:188px;
+  margin:16px auto 2px;padding:10px 34px;
+  background:var(--rev-ui);color:var(--stamp-text,#f6f1e6);
+  font-size:14px;font-weight:600;letter-spacing:.32em;text-indent:.32em;
+  border-radius:6px;box-shadow:none;
+  transition:opacity .18s;
+}
+body.review-only .rec-card .btn.rec-main{margin:6px auto 2px;min-width:172px}
+body.review-only .rev-submit:disabled,
+body.review-only .drill-submit:disabled{opacity:.4}
+
+/* ============ 录音卡：题眉 + 印章红点 + 等宽计时 ============ */
+body.review-only .rec-card{padding:15px 18px 16px;margin:2px 0 14px}
+body.review-only .rec-card .rec-ico{
+  width:30px;height:30px;border-radius:6px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--rev-ui);
+}
+body.review-only .rec-card .rec-title{
+  font-family:'LXGW WenKai',serif;font-size:15px;letter-spacing:.14em;
+}
+body.review-only .rec-card .rec-sub{
+  font-family:'LXGW WenKai',serif;font-size:12.5px;letter-spacing:.02em;
+}
+/* 录音中：静止的印章红点（绝不呼吸/脉冲），计时数字等宽 */
+body.review-only .rec-dot{animation:none;width:8px;height:8px}
+body.review-only .rec-card .rec-elapsed{
+  font-variant-numeric:tabular-nums;
+  font-size:15px;letter-spacing:.04em;
+}
+
+/* ============ 待复盘 chips：档案纸签 ============ */
+body.review-only .dual-chip{
+  border-radius:6px;box-shadow:none;
+}
+body.review-only .dual-chip-txt{font-variant-numeric:tabular-nums}
+
+/* ============ 复述题签卡 ============ */
+body.review-only .retell-card{padding:14px 18px 15px}
+/* 原文抽屉：像原阅读页的一段——衬线、行距、段距、可滚动 */
+body.review-only .retell-src{
+  max-height:46vh;overflow-y:auto;
+  font-family:'Bitter',Georgia,serif;font-size:15px;line-height:1.78;
+  color:var(--ink);
+  border:1px solid var(--border-soft);border-radius:6px;
+  padding:14px 18px;margin-top:10px;
+  background:var(--paper);
+}
+body.review-only .retell-src p{margin:0 0 .9em}
+body.review-only .retell-src p:last-child{margin-bottom:0}
+/* 原文抽屉里显影阅读器划过的高亮：荧光笔 run（mark.rt-hl，洗色 --wX 与主窗同值）
+   + 整段色卡（p.rt-para，更淡洗色 --wpX，同主窗 HL_PARA_BG 的 .16） */
+:root{
+  --wA:rgba(176,137,74,.30); --wB:rgba(95,122,88,.26); --wC:rgba(74,107,133,.22);
+  --wD:rgba(173,95,72,.22);  --wE:rgba(113,98,138,.22); --wF:rgba(138,128,72,.26); --wP:rgba(179,121,139,.24);
+  --wpA:rgba(176,137,74,.16); --wpB:rgba(95,122,88,.16); --wpC:rgba(74,107,133,.16);
+  --wpD:rgba(173,95,72,.16);  --wpE:rgba(113,98,138,.16); --wpF:rgba(138,128,72,.16); --wpP:rgba(179,121,139,.16);
+}
+body.review-only .retell-src mark.rt-hl{
+  border-radius:4px;padding:.02em .1em;color:inherit;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+}
+body.review-only .retell-src p.rt-para{
+  border-radius:8px;padding:10px 12px;margin:0 -12px .9em;
+}
+body.review-only .retell-src p.rt-para:last-child{margin-bottom:0}
+.retell-retry,.retell-chips-retry{
+  display:inline-block;margin-top:8px;padding:5px 16px;
+  border:1px solid var(--rev-ui);color:var(--rev-ui);
+  border-radius:6px;font-size:12.5px;font-weight:600;background:transparent;
+}
+.retell-chips-retry{margin:0 0 0 6px;padding:2px 10px;font-size:11.5px}
+/* 「挑几个值得练的词块」按钮：默认不自动生成，点它才现挑（用户拍板）。圆角油墨章感，比重试更像主动作。 */
+.retell-chips-gen{
+  display:inline-block;margin:4px 0 0 6px;padding:4px 14px;cursor:pointer;
+  border:1px solid var(--rev-ui);color:var(--rev-ui);background:transparent;
+  border-radius:999px;font-size:12px;font-weight:600;
+}
+.retell-chips-gen:hover{background:var(--rev-ui);color:#fff}
+
+/* 目标表达词条卡（点 chip 展开）：中文义 + 用法骨架 + 原文那句话 */
+.retell-chip{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.retell-chip.open{box-shadow:inset 0 0 0 1.5px currentColor}
+/* ③a chip 内小喇叭：贴色随 chip，平时略淡、hover 才实；点它只发音不展开 */
+.retell-chip .rc-say{display:inline-flex;line-height:0;color:inherit;opacity:.6;cursor:pointer;padding:1px;margin:-1px -2px -1px 0;border-radius:4px}
+.retell-chip .rc-say:hover{opacity:1}
+.retell-chip .rc-say svg{width:15px;height:15px}
+.retell-chip-detail{
+  margin-top:8px;padding:10px 14px;
+  border:1px solid var(--border);border-left:2px solid var(--rev-ui,#16335c);
+  border-radius:6px;background:var(--paper);
+}
+.retell-chip-detail .rcd-text{
+  font-family:'Bitter',Georgia,serif;font-size:14.5px;font-weight:600;color:var(--ink);
+}
+.retell-chip-detail .rcd-meaning{
+  font-family:'LXGW WenKai',serif;font-weight:400;font-size:13px;
+  color:var(--ink-soft);margin-left:10px;
+}
+.retell-chip-detail .rcd-pattern{
+  margin-top:4px;font-family:'Bitter',Georgia,serif;font-size:13px;
+  color:var(--rev-ui,#16335c);letter-spacing:.01em;
+}
+.retell-chip-detail .rcd-quote{
+  margin-top:6px;padding-top:6px;border-top:1px solid var(--border-soft);
+  font-family:'Bitter',Georgia,serif;font-style:italic;font-size:13px;line-height:1.65;
+  color:var(--ink-soft);
+}
+.retell-chip-detail .rcd-quote mark{
+  background:var(--voc-soft);color:var(--ink);
+  border-bottom:1.5px solid var(--voc);border-radius:2px;padding:0 1px;
+}
+
+/* ============ 复述选材屏 ============ */
+body.review-only .retell-pick-item{border-radius:6px;box-shadow:none}
+
+/* ============ 根屏「最近复盘」 ============ */
+.recent-reviews{margin:22px 0 30px}
+.recent-head{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.recent-title{
+  font-size:11.5px;font-weight:600;letter-spacing:.18em;color:var(--muted);
+}
+.recent-all{
+  margin-left:auto;font-size:12.5px;font-weight:600;color:var(--rev-ui);
+  padding:2px 4px;background:transparent;
+}
+.recent-item{
+  display:flex;align-items:baseline;gap:10px;
+  padding:9px 2px;border-bottom:1px solid var(--border-soft);
+  cursor:pointer;
+}
+.recent-item:first-child{border-top:1px solid var(--border-soft)}
+.recent-src{flex:0 0 auto;color:var(--muted);position:relative;top:1px}
+.recent-topic{
+  flex:1;min-width:0;font-size:13.5px;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.recent-date{
+  flex:0 0 auto;font-size:11.5px;color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.recent-item:hover .recent-topic{color:var(--rev-ui)}
+
+/* ============ 积累屏 ============ */
+.lib-wrap{padding-bottom:20px}
+.lib-tab-seg{margin:14px 14px 0;max-width:280px}
+body.review-only .lib-tab-seg{margin:14px 0 0}
+body.review-only .mst-controls{
+  padding:12px 0 8px;background:var(--bg);
+}
+body.review-only .mst-list{padding:0 0 12px}
+body.review-only .mst-count{padding:10px 2px 4px}
+.lib-ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lib-ctrl-row .seg{flex:1}
+.lib-actions{display:flex;gap:7px;margin-top:9px;justify-content:flex-end}
+body.review-only .lib-actions button{
+  flex:0 0 auto;padding:6px 18px;font-size:12.5px;font-weight:600;
+  border:1px solid var(--rev-ui);color:var(--rev-ui);background:transparent;
+  border-radius:6px;letter-spacing:.06em;
+}
+.lib-empty{
+  padding:30px 16px;text-align:center;color:var(--muted);
+  font-family:'LXGW WenKai',serif;font-size:13.5px;
+}
+.mst-type-note{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+
+/* seg / chips 档案标签化（独立窗）：当前项像贴上去的纸签，不做发光高亮 */
+body.review-only .seg{border-radius:6px;padding:3px;background:transparent}
+body.review-only .seg button{border-radius:4px;letter-spacing:.02em}
+body.review-only .seg button.active{
+  background:var(--gold-soft);color:var(--gold-deep);
+  box-shadow:inset 0 0 0 1px var(--gold);
+}
+body.review-only .voc-chips button{border-radius:5px}
+body.review-only .voc-search input{border-radius:6px}
+body.review-only .voc-search input:focus{
+  border-color:var(--rev-ui);box-shadow:none;
+}
+body.review-only .mst-item{border-left-width:3px;margin-bottom:8px}
+
+/* 多选条：纸面细线，不做满屏深蓝 */
+body.review-only .mst-select-bar{
+  background:var(--paper);color:var(--ink);
+  border:1px solid var(--border);border-radius:6px;
+  box-shadow:none;
+}
+body.review-only .mst-select-bar .sel-info{color:var(--ink-soft)}
+body.review-only .mst-select-bar button.cancel{
+  background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:5px;
+}
+body.review-only .mst-select-bar button.confirm{
+  background:var(--rev-ui);border:1px solid var(--rev-ui);
+  color:var(--stamp-text,#f6f1e6);border-radius:5px;
+}
+body.review-only .mst-select-bar button.confirm:disabled{opacity:.4}
+
+/* ============ 结果屏 ============ */
+body.review-only .rev-result-wrap{padding:14px 0 32px}
+/* meta 行：题眉小字 + 等宽数字 */
+body.review-only .rev-meta{
+  letter-spacing:.06em;font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--border-soft);padding-bottom:10px;
+}
+/* 总评：去色块，题眉小字 + 文楷正文（深蓝只做油墨） */
+body.review-only .rev-overall-card{
+  background:transparent;border:none;border-left:2px solid var(--rev-ui);
+  border-radius:0;padding:2px 0 2px 14px;margin:2px 0 16px;
+  color:var(--ink);font-size:14.5px;
+}
+body.review-only .rev-overall-card::before{
+  content:'总评';display:block;
+  font-family:var(--ui-font);font-size:11px;font-weight:600;
+  letter-spacing:.18em;color:var(--rev-ui);margin-bottom:3px;
+}
+/* 区块头：去底色胶囊，改小字注 + 细线 */
+body.review-only .rev-section-head{
+  background:transparent;border:none;border-bottom:1px solid var(--border);
+  border-radius:0;padding:6px 2px;
+  letter-spacing:.14em;
+}
+body.review-only .rev-card{
+  background:var(--paper);
+  border:1px solid var(--border);border-top:none;
+}
+body.review-only .rev-card:last-child{border-radius:0 0 6px 6px}
+body.review-only .rev-strengths-list,
+body.review-only .rev-empty-note{
+  border-radius:0 0 6px 6px;
+}
+body.review-only .rev-seg-block,
+body.review-only .rev-seg-head{border-radius:6px}
+/* 底栏：细线上框 + 铅字按钮 */
+body.review-only .rev-bottom-bar,
+body.review-only .chk-bottom-bar{
+  border-top:1px solid var(--border);
+  background:var(--bar-bg,rgba(255,253,247,.95));
+  margin-inline:calc(-1 * max(20px, 50% - 352px));
+  padding-inline:max(20px, calc(50% - 352px));
+}
+body.review-only .rev-btn-mistk,
+body.review-only .rev-btn-prac,
+body.review-only .chk-btn-again,
+body.review-only .chk-btn-back{
+  border-radius:6px;letter-spacing:.06em;
+}
+body.review-only .rev-expand-btn{border-radius:6px}
+
+/* ============ 练习屏 ============ */
+body.review-only .drill-screen{padding:16px 0 28px}
+body.review-only .drill-targets{padding:4px 14px}
+body.review-only .drill-textarea{
+  border-width:1px;border-radius:6px;box-shadow:none;
+}
+body.review-only .drill-textarea:focus{border-color:var(--rev-ui);box-shadow:none}
+body.review-only .rev-rec-btn{border-radius:6px}
+body.review-only .chunk-topic-btn{border-radius:6px}
+body.review-only .chunk-topic-box{border-radius:6px}
+body.review-only .check-result-wrap{padding:14px 0 30px}
+
+/* ============ 历史屏 ============ */
+body.review-only .hist-controls{padding:12px 0 8px}
+body.review-only .hist-list{padding:0 0 16px}
+body.review-only .hist-item{border-radius:6px;box-shadow:none}
+body.review-only .hist-day-head{letter-spacing:.14em}
+
+/* ============ 处理中整屏态 ============ */
+body.review-only .dual-processing-txt{
+  font-variant-numeric:tabular-nums;letter-spacing:.06em;
+  font-family:'LXGW WenKai',serif;
+}
+
+/* ================================================================
+   夜间版式（夜纸）：深暖灰近墨蓝黑做纸，暖纸白做墨，深蓝换成压暗的
+   浅墨蓝油墨（深 navy 在夜纸上读不清；亮蓝是红线，选低饱和的青灰蓝）。
+   只有独立复盘窗会置位 html[data-night="1"]。
+   ================================================================ */
+html[data-night="1"]{
+  --bg:#1d2028;           /* 夜纸 */
+  --paper:#252933;        /* 夜纸面 */
+  --ink:#ddd5c4;          /* 暖纸白（正文墨） */
+  --ink-soft:#b5ac99;
+  --muted:#7e7768;
+  --border:#3a3e48;
+  --border-soft:#31353e;
+  --gold:#a98d58;
+  --gold-soft:rgba(169,141,88,.16);
+  --gold-deep:#c2a468;
+  --voc:#8aa8c8;
+  --voc-rare:#7391ad;
+  --voc-soft:rgba(138,168,200,.12);
+  --ok:#8ba17f;
+  --star:#bd9a5e;
+  --danger:#bd7a60;
+  --shadow:none;
+  --shadow-sm:none;
+  /* 复盘 UI 油墨：夜里深蓝上浮为青灰蓝（低饱和，不发光） */
+  --rev-ui:#9db4d0;
+  --rev-ui-soft:rgba(157,180,208,.12);
+  --rev-error:#c68d72;
+  --rev-error-bg:rgba(198,141,114,.13);
+  --rev-error-ul:rgba(198,141,114,.5);
+  --rev-nat:#bda45e;
+  --rev-nat-bg:rgba(189,164,94,.13);
+  --rev-nat-ul:rgba(189,164,94,.5);
+  --rev-good:#8ba17f;
+  --rev-good-bg:rgba(139,161,127,.12);
+  /* 印章文字/底栏（覆盖亮色版的硬编码近似值） */
+  --stamp-text:#1d2028;
+  --bar-bg:rgba(29,32,40,.95);
+  /* 高亮洗色夜里换主窗暗色版；整段色卡再压到 .14 */
+  --wA:rgba(201,167,102,.26); --wB:rgba(141,176,133,.22); --wC:rgba(136,168,194,.20);
+  --wD:rgba(208,141,115,.20); --wE:rgba(166,149,197,.20); --wF:rgba(184,174,108,.22); --wP:rgba(196,149,165,.22);
+  --wpA:rgba(201,167,102,.14); --wpB:rgba(141,176,133,.14); --wpC:rgba(136,168,194,.14);
+  --wpD:rgba(208,141,115,.14); --wpE:rgba(166,149,197,.14); --wpF:rgba(184,174,108,.14); --wpP:rgba(196,149,165,.14);
+}
+html[data-night="1"] body{background:var(--bg);color:var(--ink)}
+/* style.css 里少量硬编码的亮色，逐处压暗 */
+html[data-night="1"] .topbar{background:rgba(37,41,51,.92)}
+html[data-night="1"] .rec-card .rec-ico{background:transparent;color:var(--rev-ui)}
+html[data-night="1"] .seg button.active{color:var(--gold-deep)}
+html[data-night="1"] .cont-card{background:var(--paper)}
+html[data-night="1"] .lib-item:active{background:#2b303b}
+html[data-night="1"] .toast{background:rgba(221,213,196,.95);color:#1d2028}
+
+/* ============ 头部夜/昼切换钮（独立窗） ============ */
+#reviewNightBtn svg{transition:transform .25s ease}

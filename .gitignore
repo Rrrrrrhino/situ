@@ -1,0 +1,46 @@
+# 密钥 / 个人配置 —— 绝不上传
+.env
+
+# 虚拟环境与缓存
+.venv/
+__pycache__/
+*.pyc
+
+# 用户数据 / 生成物
+library/
+audio/
+covers/
+output/*.html
+output/*.json
+santu_app/index.*.html
+
+# 打包中间产物 / 产物（大，不上传）
+build/
+packaging/build/
+packaging/dist/
+santu_app/icon_options/
+santu_app/_icon_backup_*/
+
+# 系统文件
+.DS_Store
+
+# 个人阅读数据 / 生成缓存（每人各自本地，不上传）
+vocab/
+pregen/
+_build/node_modules/
+
+# 双轨对话录音（阶段10）：个人录音数据，不进 git
+data/dualtrack/
+
+# 对话录 Swift 包：编译产物 + 打包产出，不进 git（体积大，本地重建即可）
+对话录/.build/
+对话录/dist/
+
+# node_modules（任何位置，第三方依赖不进库）
+node_modules/
+
+# 分发构建中间产物 / x86 venv
+packaging/release/
+packaging/dist-x86/
+packaging/build-x86/
+.venv-x86/

@@ -1,0 +1,20 @@
+{
+  "name": "situ-mobile",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "esbuild js/core/index.js --bundle --format=iife --global-name=SituCore --outfile=js/core.bundle.js --platform=browser --target=es2020"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "jszip": "^3.10.1",
+    "wink-eng-lite-web-model": "^1.8.1",
+    "wink-nlp": "^2.4.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "fake-indexeddb": "^6.2.5",
+    "jsdom": "^27.0.1"
+  }
+}

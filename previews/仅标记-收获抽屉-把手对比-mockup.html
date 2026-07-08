@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>仅标记 · 收获抽屉把手对比</title>
+<style>
+:root{
+  --bg:#f7f2e8; --paper:#fffdf7; --fg:#34302a; --muted:#a89c86; --border:#e9e0cd;
+  --accent:#9c7a3e; --accent-soft:rgba(156,122,62,.13);
+  --marker:rgba(190,150,80,.30); --captDeep:rgba(180,138,62,.46);
+  --ink:#4a6b85;
+  --han:'LXGW WenKai','PingFang SC',system-ui,sans-serif;
+  --read-font:'Bitter',Georgia,"PingFang SC",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--han);
+  -webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:34px 28px 80px}
+.h-kick{font:600 12px/1 var(--han);letter-spacing:.28em;color:var(--accent);text-transform:uppercase}
+.h-title{font:600 26px/1.3 var(--han);margin:9px 0 4px;color:var(--fg)}
+.h-sub{font:14px/1.85 var(--han);color:var(--muted);max-width:720px}
+.rule{height:1px;background:var(--border);margin:24px 0 30px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+.card{}
+.card-label{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
+.card-label .n{font:600 13px/1 var(--han);color:var(--ink);
+  border:1px solid var(--ink);border-radius:5px;padding:4px 7px}
+.card-label .t{font:600 16px/1 var(--han);color:var(--fg)}
+.card-note{font:13px/1.8 var(--han);color:var(--muted);margin:11px 2px 0}
+.card-note b{color:var(--fg);font-weight:600}
+
+/* ---- 迷你阅读窗（复用真实纸感/字体）---- */
+.frame{position:relative;height:340px;border:1px solid var(--border);border-radius:12px;
+  background:var(--paper);overflow:hidden;box-shadow:0 1px 0 rgba(120,90,40,.04)}
+.mini-read{position:absolute;inset:0;padding:26px 30px 20px;overflow:hidden}
+.mini-read h4{font:600 17px/1.3 var(--read-font);margin:0 0 13px;color:var(--fg)}
+.mini-read p{font:15px/1.95 var(--read-font);margin:0 0 12px;color:#4a453d}
+.mk{background:var(--marker);border-radius:5px 8px 4px 7px/7px 4px 8px 5px;padding:.02em .12em}
+.mk.deep{background:var(--captDeep)}
+.fade-r{position:absolute;top:0;right:0;bottom:0;width:120px;
+  background:linear-gradient(90deg,transparent,var(--paper) 78%);pointer-events:none}
+
+/* 甲 · 书脊竖条 */
+.spine{position:absolute;top:0;right:0;bottom:0;width:44px;background:var(--paper);
+  border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;cursor:pointer}
+.spine::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(var(--ink),var(--ink));opacity:.5}
+.spine .txt{writing-mode:vertical-rl;font:600 15px/1 var(--han);letter-spacing:.24em;color:var(--fg)}
+.spine .cnt{font:600 12px/1 var(--han);color:#fff;background:var(--ink);
+  border-radius:20px;padding:4px 7px;min-width:20px;text-align:center}
+.spine .chev{color:var(--muted);font-size:12px}
+
+/* 乙 · 页缘标签舌 */
+.tab{position:absolute;top:50%;right:0;transform:translateY(-50%);
+  background:var(--paper);border:1px solid var(--border);border-right:none;
+  border-radius:10px 0 0 10px;padding:13px 11px 13px 13px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  box-shadow:-3px 2px 10px rgba(120,90,40,.07)}
+.tab::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:2px;
+  background:var(--ink);opacity:.55}
+.tab .txt{writing-mode:vertical-rl;font:600 15px/1 var(--han);letter-spacing:.2em;color:var(--fg)}
+.tab .cnt{font:600 12px/1 var(--han);color:var(--ink);border:1.5px solid var(--ink);
+  border-radius:20px;padding:3px 6px;min-width:18px;text-align:center}
+
+/* 丙 · 角落胶囊 */
+.tally{position:absolute;right:16px;bottom:52px;font:12.5px/1 var(--han);color:var(--muted)}
+.tally b{font-weight:600;color:var(--fg)}
+.pill{position:absolute;right:16px;bottom:15px;display:inline-flex;align-items:center;gap:8px;
+  background:var(--paper);border:1px solid var(--border);border-radius:22px;
+  padding:8px 14px;cursor:pointer;box-shadow:0 2px 10px rgba(120,90,40,.08)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--ink);opacity:.7}
+.pill .lb{font:600 13px/1 var(--han);color:var(--fg)}
+.pill .cnt{font:600 12px/1 var(--han);color:#fff;background:var(--ink);
+  border-radius:16px;padding:3px 7px;min-width:18px;text-align:center}
+.pill .chev{color:var(--muted);font-size:13px}
+
+/* ---- 展开态预览 ---- */
+.open-wrap{margin-top:46px}
+.open-frame{position:relative;height:420px;border:1px solid var(--border);border-radius:12px;
+  background:var(--paper);overflow:hidden;display:flex}
+.open-read{flex:1;padding:28px 34px;overflow:hidden}
+.open-read h4{font:600 18px/1.3 var(--read-font);margin:0 0 14px}
+.open-read p{font:15px/1.95 var(--read-font);margin:0 0 12px;color:#4a453d}
+.drawer{width:344px;flex:none;border-left:1px solid var(--border);background:var(--paper);
+  box-shadow:-14px 0 26px rgba(120,90,40,.06);display:flex;flex-direction:column}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;
+  padding:15px 18px;border-bottom:1px solid var(--border)}
+.drawer-head .ttl{font:600 15px/1 var(--han);color:var(--fg);display:flex;align-items:center;gap:8px}
+.drawer-head .ttl .c{font:600 11px/1 var(--han);color:#fff;background:var(--ink);
+  border-radius:16px;padding:3px 7px}
+.drawer-head .close{font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+.drawer-body{flex:1;overflow:auto;padding:16px 18px}
+.sh-item{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;
+  background:#fffefb}
+.sh-item .en{font:600 15px/1.4 var(--read-font);color:#8a6a2e}
+.sh-item .def{font:13px/1.75 var(--han);color:#5c554a;margin-top:5px}
+.sh-tier{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;
+  vertical-align:middle}
+.badge-legend{font:13px/1.8 var(--han);color:var(--muted);margin-top:8px}
+</style></head>
+<body>
+<div class="page">
+  <div class="h-kick">Capture Mode · Harvest Drawer</div>
+  <div class="h-title">仅标记 · 收获区做成可折叠抽屉</div>
+  <div class="h-sub">进入「仅标记」后，右栏那一竖列收获内容默认收起，把阅读版面让给捕猎手感；只在右缘留一道把手 + 「收获 N」计数，想看时点它滑出抽屉。下面三种把手样式，挑一个（余光计数、点击滑出的逻辑三种一样，差别只在把手观感）。</div>
+  <div class="rule"></div>
+
+  <div class="grid">
+    <!-- 甲 -->
+    <div class="card">
+      <div class="card-label"><span class="n">甲</span><span class="t">书脊竖条</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly.</p>
+        </div>
+        <div class="fade-r"></div>
+        <div class="spine">
+          <span class="cnt">7</span>
+          <span class="txt">收获</span>
+          <span class="chev">‹</span>
+        </div>
+      </div>
+      <div class="card-note">整条右缘一道<b>窄书脊</b>（44px），像书架上竖着的一本书。竖排「收获」+ 计数徽章，最贴近"抽屉"体感，存在感稳定但不抢戏。</div>
+    </div>
+
+    <!-- 乙 -->
+    <div class="card">
+      <div class="card-label"><span class="n">乙</span><span class="t">页缘标签舌</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly.</p>
+        </div>
+        <div class="fade-r"></div>
+        <div class="tab">
+          <span class="cnt">7</span>
+          <span class="txt">收获</span>
+        </div>
+      </div>
+      <div class="card-note">只在右缘中段探出一枚<b>索引标签舌</b>（像档案卡/便签旗），不占满整条边。更轻、更"档案感"，露出面积最小。</div>
+    </div>
+
+    <!-- 丙 -->
+    <div class="card">
+      <div class="card-label"><span class="n">丙</span><span class="t">角落胶囊</span></div>
+      <div class="frame">
+        <div class="mini-read">
+          <h4>The Quiet Craft of Reading</h4>
+          <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention.</p>
+          <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way, waiting quietly.</p>
+        </div>
+        <div class="tally">已拾 <b>7</b></div>
+        <div class="pill"><span class="dot"></span><span class="lb">收获</span><span class="cnt">7</span><span class="chev">▸</span></div>
+      </div>
+      <div class="card-note">右缘完全清空，只在右下角（贴着现有「已拾 N」）浮一枚<b>小胶囊</b>。版面最干净，但更像浮层按钮，不太像"抽屉"。</div>
+    </div>
+  </div>
+
+  <!-- 展开态 -->
+  <div class="open-wrap">
+    <div class="card-label"><span class="n">展开</span><span class="t">点把手后 · 抽屉滑出（三种把手共用，滑出 .22s、无弹跳）</span></div>
+    <div class="open-frame">
+      <div class="open-read">
+        <h4>The Quiet Craft of Reading</h4>
+        <p>He turned the page slowly, letting each <span class="mk">sentence settle</span> before moving on. There was no hurry here — only the <span class="mk deep">deliberate</span> pleasure of attention that reading, at its best, requires.</p>
+        <p>The margins filled with faint pencil marks, small <span class="mk">harvests</span> gathered along the way — a phrase, a turn, a word worth keeping.</p>
+        <p>Later, when the chapter was done, he would return to them one by one.</p>
+      </div>
+      <div class="drawer">
+        <div class="drawer-head">
+          <span class="ttl">收获 <span class="c">7</span></span>
+          <span class="close">›</span>
+        </div>
+        <div class="drawer-body">
+          <div class="sh-item"><div class="en"><span class="sh-tier" style="background:#5f7a58"></span>settle before moving on</div><div class="def">在继续之前先沉淀、消化——不急着往下读。</div></div>
+          <div class="sh-item"><div class="en"><span class="sh-tier" style="background:#b0894a"></span>deliberate pleasure</div><div class="def">刻意为之、从容不迫的愉悦。</div></div>
+          <div class="sh-item"><div class="en"><span class="sh-tier" style="background:#4a6b85"></span>gathered along the way</div><div class="def">一路走一路攒下来的。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="badge-legend">关掉「仅标记」→ 抽屉收起、右栏三 tab（讲解／生词本／收获）恢复常驻，和现在完全一样。抽屉只在仅标记态出现。</div>
+  </div>
+</div>
+</body></html>

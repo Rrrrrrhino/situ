@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#f7f2e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="四土">
+<title>四土 · 阅读</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="review.css?v=1">
+</head>
+<body>
+
+<!-- 顶栏 -->
+<header class="topbar">
+  <button class="icon-btn" id="btnMenu" aria-label="菜单"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="ttl" id="topTitle">四<span class="dot">·</span>土</div>
+  <button class="icon-btn" id="btnVocabTop" aria-label="生词本"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="4" width="14" height="16" rx="1.8"/><path d="M9 4v16"/><path d="M12 8.6h4M12 12h4"/></svg></button>
+</header>
+<div class="readprog hidden" id="readProg"></div>
+
+<!-- 抽屉 -->
+<div class="scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh">
+    <div class="logo">四<span class="dot">·</span>土</div>
+    <div class="sub">点词即讲 · 读完即记</div>
+  </div>
+  <nav>
+    <button data-nav="home"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 4.5c-2.6-1.6-6.4-1.6-9 0v15c2.6-1.6 6.4-1.6 9 0 2.6-1.6 6.4-1.6 9 0v-15c-2.6-1.6-6.4-1.6-9 0z"/><path d="M12 4.5v15"/></svg></span>书架</button>
+    <button data-nav="add"><span class="ic">＋</span>添加文章 / 导入书</button>
+    <button data-nav="vocab"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="4" width="14" height="16" rx="1.8"/><path d="M9 4v16"/><path d="M12 8.6h4M12 12h4"/></svg></span>生词本</button>
+    <button data-nav="discover"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><rect x="3.5" y="5.5" width="13" height="14" rx="1.5"/><path d="M16.5 8.5h3a.5.5 0 0 1 .5.5v9a1.5 1.5 0 0 1-3 0"/><path d="M6 9.2h7M6 12.5h7M6 15.8h4.5"/></svg></span>读物精选</button>
+    <button data-nav="review"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v7.3a1.5 1.5 0 0 1-1.5 1.5h-7l-4.4 3.3v-3.3H5A1.5 1.5 0 0 1 3.5 14.3V7A1.5 1.5 0 0 1 5 5.5z"/><path d="M8 10.6v2.7M11 9.3v5.3M14 10.1v3.7M16.7 11v1.9"/></svg></span>口语复盘</button>
+    <button data-nav="settings"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2.3"/><circle cx="9" cy="16" r="2.3"/></svg></span>设置</button>
+  </nav>
+  <div class="df">四土 · 手机版 — 与桌面版共享生词本</div>
+</aside>
+
+<!-- 主视图 -->
+<main id="app"></main>
+
+<!-- 书：章节条 -->
+<div class="chapbar hidden" id="chapbar">
+  <button id="chPrev" aria-label="上一章">‹</button>
+  <div class="ch-mid" id="chMid"><div class="c1">—</div><div class="c2"></div></div>
+  <button id="chNext" aria-label="下一章">›</button>
+  <button id="chToc" aria-label="目录"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+</div>
+
+<!-- 预热指示 -->
+<div class="pregen hidden" id="pregen"></div>
+
+<!-- 通用底部 sheet（讲解 / 添加 / 目录 复用） -->
+<div class="sheet-scrim" id="sheetScrim"></div>
+<section class="sheet" id="sheet" aria-modal="true">
+  <div class="grip"></div>
+  <div class="sheet-title hidden" id="sheetTitle"><h3></h3><button class="x">✕</button></div>
+  <div class="sheet-body" id="sheetBody"></div>
+</section>
+
+<!-- 全屏 overlay：生词本 -->
+<section class="overlay" id="ovVocab">
+  <div class="ov-head">
+    <button class="icon-btn" data-close-ov="ovVocab">‹</button>
+    <div class="ttl">生词本</div>
+    <button class="icon-btn" id="vocabMore">⋯</button>
+  </div>
+  <div class="ov-body" id="vocabBody"></div>
+</section>
+
+<!-- 全屏 overlay：设置 -->
+<section class="overlay" id="ovSettings">
+  <div class="ov-head">
+    <button class="icon-btn" data-close-ov="ovSettings">‹</button>
+    <div class="ttl">设置</div>
+    <span style="width:40px"></span>
+  </div>
+  <div class="ov-body" id="settingsBody"></div>
+</section>
+
+<!-- 全屏 overlay：口语复盘 (阶段4.1) -->
+<section class="overlay" id="ovReview">
+  <div class="ov-head" id="reviewHead">
+    <button class="icon-btn" id="reviewBack">‹</button>
+    <div class="ttl" id="reviewTitle">口语复盘</div>
+    <div class="rev-head-btns">
+      <button class="icon-btn" id="reviewLibraryBtn" title="积累（错题与词块）"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><path d="M5 4.5h9.5a1.5 1.5 0 0 1 1.5 1.5v13.5H6.5A1.5 1.5 0 0 1 5 18V4.5z"/><path d="M16 8h2.5a.5.5 0 0 1 .5.5V18a1.5 1.5 0 0 1-1.5 1.5"/><path d="M8 8.5h5M8 12h5"/></svg></button>
+    </div>
+  </div>
+  <div class="ov-body" id="reviewBody"></div>
+</section>
+
+<!-- 选区讲解浮钮 -->
+<button class="sel-fab hidden" id="selFab">✦ 讲解所选</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/core.bundle.js"></script>
+<script>window.LocalApi = window.SituCore && window.SituCore.LocalApi;</script>
+<script src="app.js"></script>
+<script src="vocab.js"></script>
+<script src="settings.js"></script>
+<script src="review.js"></script>
+<script src="review-input.js"></script>
+<script src="review-result.js"></script>
+<script src="review-library.js"></script>
+<script src="review-practice.js"></script>
+<script src="discover.js"></script>
+</body>
+</html>
